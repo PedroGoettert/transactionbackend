@@ -13,6 +13,7 @@ export async function transactionRoutes(app: FastifyInstance) {
 			const transactionSchema = z.object({
 				type: z.enum(['INCOME', 'EXPENSE']).default('INCOME'),
 				amount: z.number().min(0.1),
+				category: z.string().nonempty(),
 			})
 
 			const userSchema = z.object({
@@ -24,13 +25,14 @@ export async function transactionRoutes(app: FastifyInstance) {
 			}
 
 			try {
-				const { amount, type } = transactionSchema.parse(request.body)
+				const { amount, type, category } = transactionSchema.parse(request.body)
 				const { id } = userSchema.parse(request.user)
 
 				const transaction = await transactionUseCase.create({
 					amount,
 					type,
 					userId: id,
+					category,
 				})
 
 				return reply.send({ message: 'Transação criada', transaction })

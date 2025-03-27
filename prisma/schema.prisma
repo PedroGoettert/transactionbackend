@@ -29,6 +29,7 @@ model User {
 model Transaction {
   id     String          @id @default(uuid())
   type   TransactionType
+  category String?
   amount Decimal         @default(0.0)
   date   DateTime        @default(now())
   user   User            @relation(fields: [userId], references: [id])
